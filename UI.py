@@ -14,7 +14,6 @@ first date and first hour and a second date and second hour.
 on condition we get all the information we want, we pass the information to the relevant function in the relevant
 department otherwise we will print an error and close the program.
 '''
-
 def main():
     if len(sys.argv) <= 1:
         print("Please add the required information, there are two options:\n 1. Monitor,number of X seconds"
