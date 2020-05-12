@@ -1,4 +1,3 @@
-
 import os  # for interacting with the operating system
 import psutil  # used to access system details and process utilities,For Windows service library
 import subprocess  # For Linux services
@@ -6,7 +5,7 @@ import datetime
 import time
 
 
-def monitor(current_os,secX, SERVICE_LIST_FILE, STATUS_LOG_FILE):
+def monitor(current_os, secX, SERVICE_LIST_FILE, STATUS_LOG_FILE):
     preparingTheFiles(SERVICE_LIST_FILE, STATUS_LOG_FILE)
     if current_os == "windows":
         monitorWin(secX, SERVICE_LIST_FILE, STATUS_LOG_FILE)
@@ -42,7 +41,7 @@ def sampleToServiceListWin(serviceListFile):
     for iter in psutil.win_service_iter():
         serviceName = iter.name()
         serviceStatus = iter.status()
-        lineToWrite = "{}{}\n".format(serviceName, serviceStatus)
+        lineToWrite = "{} {}\n".format(serviceName, serviceStatus)
         serviceListFile.write(lineToWrite)
         dictToReturn[serviceName] = serviceStatus
     serviceListFile.write("\n")
@@ -52,7 +51,7 @@ def sampleToServiceListWin(serviceListFile):
 
 def sampleToSLogFileWin(STATUS_LOG_FILE, dictSample1, dictSample2):
     statusLogFile = open(STATUS_LOG_FILE, "a")
-    for key, value in dictSample1:
+    for key, value in dictSample1.items():
         dateWtime = datetime.datetime.now()
         if key not in dictSample2:
             strToAdd = "Service {} is found at sample 1 but not sample 2. This service probably was uninstalled\n".format(key)
@@ -82,7 +81,7 @@ def sampleToServiceListLinux(serviceListFile):
     dateWtime = datetime.datetime.now()
     serviceListFile.write("{}\n".format(dateWtime))
     output = subprocess.check_output(["service", "--status-all"])
-    for line in output.split('\n'):
+    for line in output.decode().split('\n'):
         serviceName = line[8:]
         serviceStatus = line[3:4]
         lineToWrite = "{} {}\n".format(serviceName, serviceStatus)
@@ -94,12 +93,11 @@ def sampleToServiceListLinux(serviceListFile):
 
 
 def sampleToSLogFileLinux(STATUS_LOG_FILE, dictSample1, dictSample2):
-    statusLogFile = open(STATUS_LOG_FILE, "a")
-    for key, value in dictSample1:
+    statusLogFile = open(STATUS_LOG_FILE, "w")
+    for key, value in dictSample1.items():
         dateWtime = datetime.datetime.now()
         if key not in dictSample2:
-            strToAdd = "Service {} is found at sample 1 but not sample 2. This service probably was uninstalled\n".format(
-                key)
+            strToAdd = "Service {} is found at sample 1 but not sample 2. This service probably was uninstalled\n".format(key)
             print(strToAdd)
             statusLogFile.write(strToAdd)
             statusLogFile.flush()
