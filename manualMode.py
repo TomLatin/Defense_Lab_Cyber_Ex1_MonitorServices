@@ -9,7 +9,9 @@ def manual(firstDate, firstHour, secondDate, secondHour, SERVICE_LIST_FILE):
         if os.path.exists(SERVICE_LIST_FILE):
             list1 = findDateWTimeInServiceList(firstDate, firstHour, SERVICE_LIST_FILE)
             list2 = findDateWTimeInServiceList(secondDate, secondHour, SERVICE_LIST_FILE)
-            printAllModificationsBetweenTwoDates(list1, list2)
+            dict1 = listToDict(list1)
+            dict2 = listToDict(list2)
+            printAllModificationsBetweenTwoDates(dict1, firstDate+" "+firstHour, dict2, secondDate+" "+secondHour)
         else:
             print("The system has no information")
             exit()
@@ -36,19 +38,32 @@ def findDateWTimeInServiceList(date, hour, SERVICE_LIST_FILE):
                         listToReturn.append(nextLine)
                         nextLine = serviceListFile.__next__()
             elif line[0:24] == "Sampling date and time: " and len(listToReturn) != 0 and line[25:34] == date:
+                secondedCheck = abs(hour[0:1]-hourOfList[0:1]) == abs(hour[0:1]-line[35:36]) and abs(hour[3:4]-hourOfList[3:4]) == abs(hour[0:1]-line[38:39]) and abs(hour[6:7]-hourOfList[6:7]) > abs(hour[6:7]-line[41:42])
                 if abs(hour[0:1]-hourOfList[0:1]) > abs(hour[0:1]-line[35:36]) \
                         or (abs(hour[0:1]-hourOfList[0:1]) == abs(hour[0:1]-line[35:36]) and abs(hour[3:4]-hourOfList[3:4]) > abs(hour[0:1]-line[38:39]))\
-                        or (abs(hour[0:1]-hourOfList[0:1]) == abs(hour[0:1]-line[35:36]) and abs(hour[3:4]-hourOfList[3:4]) == abs(hour[0:1]-line[38:39]) and abs(hour[6:7]-hourOfList[6:7]) > abs(hour[6:7]-line[41:42])):
-                    listToReturn = []
-                    nextLine = serviceListFile.__next__()
-                    while nextLine[0:24] != "Sampling date and time: ":
-                        listToReturn.append(nextLine)
+                        or secondedCheck:
+                    if secondedCheck:
+                        listToReturn = []
                         nextLine = serviceListFile.__next__()
+                        while nextLine[0:24] != "Sampling date and time: ":
+                            listToReturn.append(nextLine)
+                            nextLine = serviceListFile.__next__()
+                        return listToReturn
+                    else:
+                        hourOfList = line[35:42]
+                        listToReturn = []
+                        nextLine = serviceListFile.__next__()
+                        while nextLine[0:24] != "Sampling date and time: ":
+                            listToReturn.append(nextLine)
+                            nextLine = serviceListFile.__next__()
             else:
               print("Something went wrong with date in the file Service List")
               exit()
     return listToReturn
 
-def printAllModificationsBetweenTwoDates(list1, list2):
+def listToDict(list1):
+    pass
+
+def printAllModificationsBetweenTwoDates(dict1, firstDateWTime, dict2, secondDateWTime):
     pass
 

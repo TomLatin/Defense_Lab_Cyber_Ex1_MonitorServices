@@ -100,7 +100,7 @@ def sampleToSLogFileLinux(STATUS_LOG_FILE, dictSample1, dictSample2):
     for key, value in dictSample1.items():
         dateWtime = datetime.datetime.now()
         if key not in dictSample2:
-            strToAdd = "Service {} is found at sample 1 but not sample 2. This service probably was uninstalled\n".format(key)
+            strToAdd = "Service {} is found at sample 1 but not sample 2.\n".format(key)
             print(strToAdd)
             statusLogFile.write(strToAdd)
             statusLogFile.flush()
