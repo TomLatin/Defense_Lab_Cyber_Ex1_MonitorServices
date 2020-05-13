@@ -25,7 +25,6 @@ elif sys.argv[1].lower() == "monitor":
         print("the required information not supplied, missing number of X seconds")
         exit()
     else:
-        print("***monitor***")
         current_os = platform.system().lower()
         secX = int(sys.argv[2])
         monitor(current_os, secX, SERVICE_LIST_FILE, STATUS_LOG_FILE)
@@ -41,4 +40,4 @@ elif sys.argv[1].lower() == "manual":
         firstHour = sys.argv[3]
         secondDate = sys.argv[4]
         secondHour = sys.argv[5]
-        manual(current_os, firstDate, firstHour, secondDate, secondHour, SERVICE_LIST_FILE, STATUS_LOG_FILE)
+        manual(firstDate, firstHour, secondDate, secondHour, SERVICE_LIST_FILE)

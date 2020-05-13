@@ -37,7 +37,7 @@ def sampleToServiceListWin(serviceListFile):
     dictToReturn = {}
     # class datetime.datetime give a combination of a date and a time.
     dateWtime = datetime.datetime.now()
-    serviceListFile.write("{}\n".format(dateWtime))
+    serviceListFile.write("Sampling date and time: {}\n".format(dateWtime))
     for iter in psutil.win_service_iter():
         serviceName = iter.name()
         serviceStatus = iter.status()
@@ -79,11 +79,14 @@ def sampleToServiceListLinux(serviceListFile):
     dictToReturn = {}
     # class datetime.datetime give a combination of a date and a time.
     dateWtime = datetime.datetime.now()
-    serviceListFile.write("{}\n".format(dateWtime))
+    serviceListFile.write("Sampling date and time: {}\n".format(dateWtime))
     output = subprocess.check_output(["service", "--status-all"])
     for line in output.decode().split('\n'):
+        if line[3:4] == '+':
+            serviceStatus = "running"
+        else:  #line[3:4] == '-'
+            serviceStatus = "stopped"
         serviceName = line[8:]
-        serviceStatus = line[3:4]
         lineToWrite = "{} {}\n".format(serviceName, serviceStatus)
         serviceListFile.write(lineToWrite)
         dictToReturn[serviceName] = serviceStatus
@@ -104,15 +107,6 @@ def sampleToSLogFileLinux(STATUS_LOG_FILE, dictSample1, dictSample2):
         elif value != dictSample2[key]:
             status1 = value
             status2 = dictSample2[key]
-            if status1 == "+":
-                status1 = "running"
-            else:
-                status1 = "stopped"
-
-            if status2 == "+":
-                status2 = "running"
-            else:
-                status2 = "stopped"
             strToAdd = "{}: Service '{}' changed status from '{}' to '{}'".format(dateWtime, key, status1, status2)
             print(strToAdd)
             statusLogFile.write(strToAdd)
