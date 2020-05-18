@@ -31,34 +31,27 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
         for line in serviceListFile:
                 if line[0:23] == "Sampling date and time:" and line[24:34] == str(date.date()) and line[35:37] == str(date.hour) and line[38:40] == str(date.minute):
                     secInThisLine = line[41:43]
+                    if secInThisLine == str(date.second):
+                        listToReturn = []
+                        nextLine = serviceListFile.__next__()
+                        while nextLine[0:23] != "Sampling date and time:":
+                            listToReturn.append(nextLine)
+                            nextLine = serviceListFile.__next__()
+                        return listToReturn
+
                     if not listToReturn: #the list is empty
-                       if secInThisLine == str(date.second):
-                           nextLine = serviceListFile.__next__()
-                           while nextLine[0:23] != "Sampling date and time:":
-                               listToReturn.append(nextLine)
-                               nextLine = serviceListFile.__next__()
-                           return listToReturn
-                       else:
-                           preSec = secInThisLine
-                           nextLine = serviceListFile.__next__()
-                           while nextLine[0:23] != "Sampling date and time:":
-                               listToReturn.append(nextLine)
-                               nextLine = serviceListFile.__next__()
-                    if abs(int(date.second)-int(preSec)) > abs(int(date.second)-int(nextLine[41:43])):
-                            listToReturn = []
-                            if secInThisLine == str(date.second):
-                                nextLine = serviceListFile.__next__()
-                                while nextLine[0:23] != "Sampling date and time:":
-                                    listToReturn.append(nextLine)
-                                    nextLine = serviceListFile.__next__()
-                                return listToReturn
-                            else:
-                                listToReturn = []
-                                preSec = secInThisLine
-                                nextLine = serviceListFile.__next__()
-                                while nextLine[0:23] != "Sampling date and time:":
-                                    listToReturn.append(nextLine)
-                                    nextLine = serviceListFile.__next__()
+                       preSec = secInThisLine
+                       nextLine = serviceListFile.__next__()
+                       while nextLine[0:23] != "Sampling date and time:":
+                            listToReturn.append(nextLine)
+                            nextLine = serviceListFile.__next__()
+                    elif abs(int(date.second)-int(preSec)) > abs(int(date.second)-int(line[41:43])):
+                             listToReturn = []
+                             preSec = secInThisLine
+                             nextLine = serviceListFile.__next__()
+                             while nextLine[0:23] != "Sampling date and time:":
+                                 listToReturn.append(nextLine)
+                                 nextLine = serviceListFile.__next__()
 
       except StopIteration:
           pass
@@ -111,9 +104,9 @@ def printAllModificationsBetweenTwoDates(dict1, firstDateWTime, dict2, secondDat
             count = count + 1
             strToAdd = "Service {} in the date: {} was {} \nand in the date: {} it was {}\n".format(key, firstDateWTime, status1, secondDateWTime, status2)
             print(strToAdd)
-    for key1, value1 in dict2.items():
-        if key1 not in dict1:
-            strToAdd = "Service {} is found at {} but not {}\n".format(key1, firstDateWTime, secondDateWTime)
+    for key, value in dict2.items():
+        if key not in dict1:
+            strToAdd = "Service {} is found at {} but not {}\n".format(key, firstDateWTime, secondDateWTime)
             count = count + 1
             print(strToAdd)
     if count == 0:
