@@ -7,10 +7,7 @@ import time
 def manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE):
         if os.path.exists(SERVICE_LIST_FILE):
             list1 = findDateWTimeInServiceList(firstDateDT, SERVICE_LIST_FILE)
-            #print(list1)
-            #print("@@@@@@@@@@@@@@@@@@@@@@@@@@@")
             list2 = findDateWTimeInServiceList(secondDateDT, SERVICE_LIST_FILE)
-            #print(list2)
             if notAnEmptyList(list1, firstDateDT) and notAnEmptyList(list2, secondDateDT):
                 dict1 = listTodict(list1)
                 dict2 = listTodict(list2)
@@ -30,6 +27,7 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
     listToReturn = []
     preSec = ""
     with open(SERVICE_LIST_FILE, "r") as serviceListFile:
+      try:
         for line in serviceListFile:
                 if line[0:23] == "Sampling date and time:" and line[24:34] == str(date.date()) and line[35:37] == str(date.hour) and line[38:40] == str(date.minute):
                     secInThisLine = line[41:43]
@@ -37,21 +35,21 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
                        if secInThisLine == str(date.second):
                            nextLine = serviceListFile.__next__()
                            while nextLine[0:23] != "Sampling date and time:":
-                               listToReturn.append(line)
+                               listToReturn.append(nextLine)
                                nextLine = serviceListFile.__next__()
                            return listToReturn
                        else:
                            preSec = secInThisLine
                            nextLine = serviceListFile.__next__()
                            while nextLine[0:23] != "Sampling date and time:":
-                               listToReturn.append(line)
+                               listToReturn.append(nextLine)
                                nextLine = serviceListFile.__next__()
                     if abs(int(date.second)-int(preSec)) > abs(int(date.second)-int(nextLine[41:43])):
                             listToReturn = []
                             if secInThisLine == str(date.second):
                                 nextLine = serviceListFile.__next__()
                                 while nextLine[0:23] != "Sampling date and time:":
-                                    listToReturn.append(line)
+                                    listToReturn.append(nextLine)
                                     nextLine = serviceListFile.__next__()
                                 return listToReturn
                             else:
@@ -59,8 +57,11 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
                                 preSec = secInThisLine
                                 nextLine = serviceListFile.__next__()
                                 while nextLine[0:23] != "Sampling date and time:":
-                                    listToReturn.append(line)
+                                    listToReturn.append(nextLine)
                                     nextLine = serviceListFile.__next__()
+
+      except StopIteration:
+          pass
     return listToReturn
 
 
