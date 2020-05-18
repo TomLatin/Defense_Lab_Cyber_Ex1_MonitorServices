@@ -1,5 +1,6 @@
 from manualMode import manual
 from monitorMode import monitor
+from security import validDateWTime
 import platform  # provides system information like on which the program is being currently executed
 import sys
 
@@ -36,8 +37,11 @@ elif sys.argv[1].lower() == "manual":
         exit()
     else:
         current_os = platform.system().lower()
-        firstDate = sys.argv[2]
-        firstHour = sys.argv[3]
-        secondDate = sys.argv[4]
-        secondHour = sys.argv[5]
-        manual(firstDate, firstHour, secondDate, secondHour, SERVICE_LIST_FILE)
+        firstDateTxt = sys.argv[2] + " " + sys.argv[3]
+        secondDateTxt = sys.argv[4] + " " + sys.argv[5]
+        firstDateDT = validDateWTime(firstDateTxt)
+        secondDateDT = validDateWTime(secondDateTxt)
+        if firstDateDT == False or secondDateDT == False:
+            print("The dates were not received in the correct format, the following format:YYYY-MM-DD HH:MM:SS")
+            exit()
+        manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE)

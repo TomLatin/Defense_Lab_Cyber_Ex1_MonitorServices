@@ -1,5 +1,9 @@
 import datetime
 import time
 
-def validDateWTime(date, hour):
-    return datetime.datetime.strptime(date+" "+hour, "%Y-%m-%d %H:%M:%S")
+def validDateWTime(dateWTimeTxt):
+    try:
+      return datetime.datetime.strptime(dateWTimeTxt, "%Y-%m-%d %H:%M:%S")
+    except:
+        print("{} : Incorrect data format, it should be YYYY-MM-DD HH:MM:SS".format(dateWTimeTxt))
+        return False
