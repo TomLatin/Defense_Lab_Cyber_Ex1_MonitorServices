@@ -15,33 +15,33 @@ first date and first hour and a second date and second hour.
 on condition we get all the information we want, we pass the information to the relevant function in the relevant
 department otherwise we will print an error and close the program.
 '''
-
-if len(sys.argv) <= 1:
-    print("Please add the required information, there are two options:\n 1. Monitor,number of X seconds"
-          " \n 2. Manual, first date, first hour, second date, second hour")
-    exit()
-elif sys.argv[1].lower() == "monitor":
-
-    if len(sys.argv) <= 2:
-        print("the required information not supplied, missing number of X seconds")
-        exit()
-    else:
+mode = 0
+while mode != 3:
+    mode = int(input("Choose mode: \n    1 - manual\n    2 - monitor\n    3 - exit\n"))
+    if mode == 1:
+        flag = True
+        try:
+            d1, t1, d2, t2 = input("enter 2 dates and times: ").split()
+            firstDateTxt = d1 + " " + t1
+            secondDateTxt = d2 + " " + t2
+        except ValueError:
+            print("not enough values, please enter YYYY-MM-DD HH:MM:SS YYYY-MM-DD HH:MM:SS\n")
+            flag = False
+        if flag:
+            firstDateDT = validDateWTime(firstDateTxt)
+            secondDateDT = validDateWTime(secondDateTxt)
+            if firstDateDT == False or secondDateDT == False:
+              print("The dates were not received in the correct format, the following format:YYYY-MM-DD HH:MM:SS\n")
+              flag = False
+        if flag:
+             manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE)
+    elif mode == 2:
+        flag = True
         current_os = platform.system().lower()
-        secX = int(sys.argv[2])
-        monitor(current_os, secX, SERVICE_LIST_FILE, STATUS_LOG_FILE)
-
-elif sys.argv[1].lower() == "manual":
-
-    if len(sys.argv) <= 5:
-        print("the required information not supplied, missing date or time")
-        exit()
-    else:
-        current_os = platform.system().lower()
-        firstDateTxt = sys.argv[2] + " " + sys.argv[3]
-        secondDateTxt = sys.argv[4] + " " + sys.argv[5]
-        firstDateDT = validDateWTime(firstDateTxt)
-        secondDateDT = validDateWTime(secondDateTxt)
-        if firstDateDT == False or secondDateDT == False:
-            print("The dates were not received in the correct format, the following format:YYYY-MM-DD HH:MM:SS")
-            exit()
-        manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE)
+        try:
+          secX = int(input("enter secounds: \n"))
+        except ValueError:
+            print("The resulting input is not an integer\n")
+            flag = False
+        if flag:
+            monitor(current_os, secX, SERVICE_LIST_FILE, STATUS_LOG_FILE)

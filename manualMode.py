@@ -1,8 +1,5 @@
 import os  # for interacting with the operating system
-from security import validDateWTime
 import datetime
-import time
-
 
 def manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE):
         if os.path.exists(SERVICE_LIST_FILE):
@@ -56,7 +53,6 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
       except StopIteration:
           pass
     return listToReturn
-
 
 
 def notAnEmptyList(listForCheck, dateWTime):
