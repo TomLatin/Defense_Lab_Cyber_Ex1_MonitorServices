@@ -1,6 +1,17 @@
 import os  # for interacting with the operating system
 import datetime
 
+'''
+input:
+1.Date and time (datetime)
+2.Date and time (datetime)
+3.A string representing the name of the serviceList file
+
+output:
+If there were changes between the samples, they would be printed to the screen else Will be printed to the screen there were no changes .
+If the date and time were not found in the list service file, we were printed to the screen that we did not find a sample date and time in the list service file.
+If the list service file does not exist we printed to the screen that we dont have the information for the system.
+'''
 def manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE):
         if os.path.exists(SERVICE_LIST_FILE):
             list1 = findDateWTimeInServiceList(firstDateDT, SERVICE_LIST_FILE)
@@ -19,7 +30,15 @@ def manual(firstDateDT, secondDateDT, SERVICE_LIST_FILE):
         else:
             print("The system has no information")
             exit()
-
+'''
+Manual function auxiliary function, its function is to find the date it received in the serviceList file exactly the best
+input:
+1. Date and time (datetime)
+2. A string representing the file name of the serviceList
+output:
+The function returns a list containing the exact date and time sample of the best second it could find,
+if the function did not find the date and time in the file the function returned a empty list.
+'''
 def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
     listToReturn = []
     preSec = ""
@@ -35,7 +54,6 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
                             listToReturn.append(nextLine)
                             nextLine = serviceListFile.__next__()
                         return listToReturn
-
                     if not listToReturn: #the list is empty
                        preSec = secInThisLine
                        nextLine = serviceListFile.__next__()
@@ -54,7 +72,17 @@ def findDateWTimeInServiceList(date, SERVICE_LIST_FILE):
           pass
     return listToReturn
 
-
+'''
+Auxiliary function for the Manual function, its function is to check whether the list returned from 
+the findDateWTimeInServiceList function is not empty, if it is empty we let know the client that we did not find a 
+sample at this date and time in the serviceList file.
+input:
+1.List
+2. date and time (datetime)
+output:
+If the list is found to be empty, we will printthat we did not find a 
+sample at this date and time in the serviceList file and return False else return True.
+'''
 def notAnEmptyList(listForCheck, dateWTime):
     if len(listForCheck) == 0:
         print("The system did not find data on the following date and hour:'{}' Or data in that hour".format(dateWTime))
@@ -62,6 +90,12 @@ def notAnEmptyList(listForCheck, dateWTime):
     else:
         return True
 
+'''
+An auxiliary function for the Manual function, its function is to convert the received lists from the 
+findDateWTimeInServiceList function to dictionaries in order to make it easier to search for changes between samples.
+Input: List
+Output: Dictionary
+'''
 def listTodict(listForDict):
     dictToReturn = {}
     for line in listForDict:
@@ -86,7 +120,11 @@ def listTodict(listForDict):
 
     return dictToReturn
 
-
+'''
+An auxiliary function for the Manual function, its function is to print all changes between the 2 samples.
+Input: 2 dictionaries and 2 dates (datetime)
+Output: Print
+'''
 def printAllModificationsBetweenTwoDates(dict1, firstDateWTime, dict2, secondDateWTime):
     count = 0
     for key, value in dict1.items():
